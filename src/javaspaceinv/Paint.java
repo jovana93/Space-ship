@@ -12,13 +12,15 @@ public class Paint {
     
     private int x;
     private int y;
-    private int WIDHT = 70;
-    private int HIGHT = 20;
+    private int WIDHT;
+    private int HIGHT;
     
        
-    public Paint(int x, int y) {
+    public Paint(int x, int y, int  WIDHT,int HIGHT ) {
         this.x = x;
         this.y = y;
+        this.WIDHT = WIDHT;
+        this.HIGHT = HIGHT;
         
         lowerRectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
     }
@@ -52,5 +54,7 @@ public class Paint {
     { if (getX() + getWIDHT() < 595)
         x  +=20;
     }
+    
+    
 }
 
