@@ -1,13 +1,9 @@
 package javaspaceinv;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 
-
-public class Paint {
-    private Rectangle2D.Double lowerRectangle;
+public class Ship {
+private Rectangle2D.Double lowerRectangle;
     private int speedX =1;
     
     private int x;
@@ -16,7 +12,7 @@ public class Paint {
     private int HIGHT;
     
        
-    public Paint(int x, int y, int  WIDHT,int HIGHT ) {
+    public Ship(int x, int y, int  WIDHT,int HIGHT ) {
         this.x = x;
         this.y = y;
         this.WIDHT = WIDHT;
@@ -53,8 +49,6 @@ public class Paint {
     public void move1()
     { if (getX() + getWIDHT() < 595)
         x  +=20;
-    }
-    
-    
+    }    
 }
 

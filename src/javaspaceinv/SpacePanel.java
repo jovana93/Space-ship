@@ -17,14 +17,14 @@ import javax.swing.Timer;
 
 public class SpacePanel extends JPanel implements  ActionListener, KeyListener {	 
 
-    
+    int frame;
      private Font mainFont;
      private final int PANEL_HEIGHT = 400;
      private final int PANEL_WIDTH = 600;
-     private Paint obstacle1,obstacle2,obstacle3,obstacle4,obstacle5,obstacle6;
+     private Ship ship;
+     private Invaders[][] invaders = new Invaders[10][5];
+     private Wall[] walls = new Wall[3];
      private Timer timer;
-     
-     
      
     public SpacePanel() {
         mainFont = new Font("Ariel", Font.BOLD, 18);
@@ -34,26 +34,26 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
         setLayout(null);
         setBackground(Color.WHITE);
         setFocusable(true);
+        frame = 0;
         timer = new Timer(30,this);
         timer.start();
         addKeyListener (this);
-        obstacle1 = new Paint((getPANEL_WIDTH()- 70)/2,getPANEL_HEIGHT()-20,70,20);
-        obstacle2 = new Paint((getPANEL_WIDTH()-380)/2,40,20,20);
-        //obstacle4 = new Paint(((getPANEL_WIDTH()- 480)/2)+185,getPANEL_HEIGHT() -150,70,80);
-        //obstacle5 = new Paint(((getPANEL_WIDTH()- 480))/2 + 360,getPANEL_HEIGHT() -150,70,80);
-        obstacle6 = new Paint((getPANEL_WIDTH()- 410)/2,getPANEL_HEIGHT() -150,70,80);
+        ship = new Ship((getPANEL_WIDTH()- 70)/2,getPANEL_HEIGHT()-20,70,20);
+        for(int i = 0; i<10; i++)
+            for(int j = 0; j<5; j++)
+                invaders[i][j] = new Invaders(i*30, j*30, 20, 20);
+         walls[0] = new Wall((getPANEL_WIDTH()- 410)/2,getPANEL_HEIGHT() -150,70,80);
        
         
 
 
 
+      }
+    private void moveObjects(){ 
+        for(int i=0; i<10; i++)
+            for(int j = 0; j<5; j++)
+                invaders[i][j].move();
     }
-    /*private void moveObjects()
-   
-    { 
-        obstacle.move();
-    }
-    */
     
     
     @Override
@@ -61,39 +61,20 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
         super.paint(g); 
         Graphics2D g2d = (Graphics2D)g;
         
-        g2d.draw(obstacle1.getLowerRectangle());
-        g2d.draw(obstacle2.getLowerRectangle());
-        //g2d.draw(obstacle4.getLowerRectangle());
-        //g2d.draw(obstacle5.getLowerRectangle());
-        //g2d.draw(obstacle6.getLowerRectangle());
+        g2d.draw(ship.getLowerRectangle());
+        for(int i = 0; i<10; i++)
+            for(int j=0; j<5; j++)
+                g2d.draw(invaders[i][j].getLowerRectangle());
         
-    
-        int x = obstacle2.getX();
-        int y = obstacle2.getY();
-        int x1 = obstacle6.getX();
+        int x1 = walls[0].getX();
         
-        
-        
-          int i, j,k;
-          
-        for (k = 1; k <= 3; k++)
+        for (int k = 0; k < 3; k++)
         {
-            obstacle4 = new Paint(x1,getPANEL_HEIGHT() -150,70,40);
-            g2d.draw(obstacle4.getLowerRectangle());
-            x1+=(obstacle6.getWIDHT() +100);
+            walls[k] = new Wall(x1,getPANEL_HEIGHT() -150,70,40);
+            g2d.draw(walls[k].getLowerRectangle());
+            x1+=(walls[0].getWIDHT() +100);
         }
-
-        for (i = 1; i <= 5; i++) {
-            for (j = 1; j <= 10; j++) 
-                {   obstacle3 = new Paint(x, y ,20,20);
-                    g2d.draw(obstacle3.getLowerRectangle());
-                    x += obstacle2.getWIDHT()+20;
-                    
-                }   
-                    
-                    y += obstacle2.getWIDHT()+20;
-                    x = obstacle2.getX();
-    }}
+}
 
     public int getPANEL_HEIGHT() {
         return PANEL_HEIGHT;
@@ -105,22 +86,26 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //obstacle.move();
+        frame++;
+        if(frame%3 == 0)
+        {
+     //       moveObjects();
+        }
          repaint(); 
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
          
       if (e.getKeyCode() == KeyEvent.VK_LEFT)	   
-            obstacle1.move();	
+            ship.move();	
       if (e.getKeyCode() == KeyEvent.VK_RIGHT)	   
-            obstacle1.move1();	
+            ship.move1();	
  }
 
     @Override
