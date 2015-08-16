@@ -1,10 +1,14 @@
 package javaspaceinv;
 
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class Wall {
     private Rectangle2D.Double lowerRectangle;
-    
+     static BufferedImage wallImage = null;
     private int x;
     private int y;
     private int WIDHT;
@@ -46,7 +50,18 @@ public class Wall {
             return true;
         return false;
     }
-    
+    public static void loadImages() {
+        try {
+            wallImage = ImageIO.read(new File("src/images/zid.jpg"));
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    public static BufferedImage getImage() {
+        return wallImage;
+    }
    }
+
 
 

@@ -6,22 +6,22 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-public class Ship {
-private Rectangle2D.Double lowerRectangle;
+public class Missile {
+    private Rectangle2D.Double lowerRectangle;
     private int speedX =1;
-    static BufferedImage shipImage = null;
+    static BufferedImage missileImage = null;
+    
     private int x;
     private int y;
     private int WIDHT;
     private int HIGHT;
-    
-       
-    public Ship(int x, int y, int  WIDHT,int HIGHT ) {
+    private boolean hited;   
+    public Missile(int x, int y) {
         this.x = x;
         this.y = y;
-        this.WIDHT = WIDHT;
-        this.HIGHT = HIGHT;
-        
+        this.WIDHT = 5;
+        this.HIGHT = 10;
+        hited = false;
         lowerRectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
     }
     public Rectangle2D.Double getLowerRectangle() {
@@ -44,25 +44,26 @@ private Rectangle2D.Double lowerRectangle;
     public int getY() {
         return y;
     }
-    
-    public void move()
-    {
-        if (getX() > 5)
-        x  -=20;
+
+    public boolean isHited() {
+        return hited;
     }
-    public void move1()
-    { if (getX() + getWIDHT() < 595)
-        x  +=20;
-    }    
+
+    
     public static void loadImages() {
         try {
-            shipImage = ImageIO.read(new File("src/images/brodic.jpg"));
+            missileImage = ImageIO.read(new File("src/images/invader.jpg"));
         } catch (IOException e) {
             System.out.println(e);
         }
     }
 
     public static BufferedImage getImage() {
-        return shipImage;
+        return missileImage;
+    }
+    
+    public void move()
+    {
+        y -=2;
     }
 }
