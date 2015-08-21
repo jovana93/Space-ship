@@ -167,7 +167,7 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
             Invaders.loadImages();
             Wall.loadImages();
             Ship.loadImages();
-            backgroundImage = ImageIO.read(new File("src/images/pozadina.jpg"));
+            backgroundImage = ImageIO.read(new File("src/images/space.jpg"));
         } catch (IOException e) {
             System.out.println(e);
         }

@@ -52,7 +52,7 @@ public class Wall {
     }
     public static void loadImages() {
         try {
-            wallImage = ImageIO.read(new File("src/images/zid.jpg"));
+            wallImage = ImageIO.read(new File("src/images/wall.jpg"));
         } catch (IOException e) {
             System.out.println(e);
         }

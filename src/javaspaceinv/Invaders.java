@@ -56,7 +56,7 @@ public class Invaders {
     }
     public static void loadImages() {
         try {
-            invaderImage = ImageIO.read(new File("src/images/invaders"));
+            invaderImage = ImageIO.read(new File("src/images/alien.jpg"));
         } catch (IOException e) {
             System.out.println(e);
         }

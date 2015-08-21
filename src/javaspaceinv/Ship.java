@@ -56,7 +56,7 @@ private Rectangle2D.Double lowerRectangle;
     }    
     public static void loadImages() {
         try {
-            shipImage = ImageIO.read(new File("src/images/brodic.jpg"));
+            shipImage = ImageIO.read(new File("src/images/ship.jpg"));
         } catch (IOException e) {
             System.out.println(e);
         }
