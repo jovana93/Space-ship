@@ -70,6 +70,10 @@ public class Invaders {
         this.side = side;
     }
     
+    public void setHited(boolean hited) {
+        this.hited = hited;
+    }
+    
     public void move()
     {
         if(side){

@@ -15,6 +15,7 @@ public class Wall {
     private int HIGHT;
     private final int maxHits = 5;
     private int hitCount;
+    private boolean finished;
     public Wall(int x, int y, int  WIDHT,int HIGHT ) {
         this.x = x;
         this.y = y;
@@ -22,6 +23,7 @@ public class Wall {
         this.HIGHT = HIGHT;
         hitCount = 0;
         lowerRectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
+        finished = false;
     }
     public Rectangle2D.Double getLowerRectangle() {
         lowerRectangle.x = x;
@@ -44,12 +46,15 @@ public class Wall {
         return y;
     }
 
-    public  boolean Hited(){
+    public void Hited(){
             hitCount++;
         if(hitCount == maxHits)
-            return true;
-        return false;
+            finished = true;
     }
+    public boolean isFinished() {
+        return finished;
+    }
+    
     public static void loadImages() {
         try {
             wallImage = ImageIO.read(new File("src/images/wall.jpg"));
