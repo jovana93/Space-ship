@@ -10,8 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -26,7 +28,9 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
      private Ship ship;
      private Invaders[][] invaders = new Invaders[10][5];
      private Wall[] walls = new Wall[3];
+     private ArrayList<Missile> missiles;
      private Timer timer;
+     private boolean inGame;
      
       static Image backgroundImage;
       private final int BACKGROUND_WIDTH = 1000;
@@ -34,9 +38,12 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
      
     public SpacePanel() {
         mainFont = new Font("Ariel", Font.BOLD, 18);
+        inGame = false;
         
         backgroundPosition = 0;
         loadImages();
+        
+        missiles = new ArrayList<>();
         
         setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
         setLayout(null);
@@ -44,13 +51,16 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
         setFocusable(true);
         frame = 0;
         timer = new Timer(30,this);
-        timer.start();
+        
         addKeyListener (this);
         ship = new Ship((getPANEL_WIDTH()- 70)/2,getPANEL_HEIGHT()-20,70,20);
         for(int i = 0; i<10; i++)
             for(int j = 0; j<5; j++)
                 invaders[i][j] = new Invaders(i*30, j*30, 20, 20);
          walls[0] = new Wall((getPANEL_WIDTH()- 410)/2,getPANEL_HEIGHT() -150,70,80);
+         int x1 = walls[0].getX();
+         for(int k = 0; k<3; k++)
+         walls[k] = new Wall(x1+k*(walls[0].getWIDHT() +100),getPANEL_HEIGHT() -150,70,40);
        }
     
     private void setMoveSide(boolean side){
@@ -58,7 +68,7 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
             for(int j = 0; j<5; j++)
                 invaders[i][j].setSide(side);
     }
-    private void moveObjects(){
+    private void moveInvaders(){
         boolean moveSide = invaders[0][0].isSide();
         boolean temp;
         if(moveSide)
@@ -104,14 +114,22 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
                     g2d.draw(invaders[i][j].getLowerRectangle());
                     drawInvaders(g2d, i,j);
                 }
-        int x1 = walls[0].getX();
+        
         
         for (int k = 0; k < 3; k++)
         {
-            walls[k] = new Wall(x1+k*(walls[0].getWIDHT() +100),getPANEL_HEIGHT() -150,70,40);
+            if(!walls[k].isFinished()){
+            
             g2d.draw(walls[k].getLowerRectangle());
             drawWall(g2d, k);
-        }
+        }}
+        if(!missiles.isEmpty())
+             for(int i = 0; i< missiles.size(); i++)
+             {
+                 //g2d.draw(missiles.get(i).getLowerRectangle());
+                 g2d.drawImage(Wall.getImage(),missiles.get(i).getX(),missiles.get(i).getY(), missiles.get(i).getWIDHT(), missiles.get(i).getHIGHT(), null);
+             }
+            
     }
     private void drawInvaders(Graphics2D g2d, int i, int j){
         g2d.drawImage(Invaders.getImage(),invaders[i][j].getX(),invaders[i][j].getY(), invaders[i][j].getWIDHT(), invaders[i][j].getHIGHT(), null);
@@ -136,12 +154,26 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        frame++;
-        if(frame%10 == 0)
+        if(inGame)
         {
-            moveObjects();
+            frame++;
+            moveMissile();
+            if(frame%10 == 0)
+            {
+                moveInvaders();
+                int k = hasMissileHitObstacle();
+                if(k!=-1)
+                    missiles.remove(k);
+            }
+        if(gameOver())
+        {    
+            inGame = false;
+            if(!missiles.isEmpty())
+                missiles.clear();
+            timer.stop();
         }
-         repaint(); 
+        repaint();
+        }
     }
 
     @Override
@@ -151,12 +183,19 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-         
-      if (e.getKeyCode() == KeyEvent.VK_LEFT)	   
+      if(!inGame){
+          inGame = true;
+          timer.start();
+      }
+          if (e.getKeyCode() == KeyEvent.VK_LEFT)	   
             ship.move();	
-      if (e.getKeyCode() == KeyEvent.VK_RIGHT)	   
+      else if(e.getKeyCode() == KeyEvent.VK_RIGHT)	   
             ship.move1();	
- }
+      else if(e.getKeyCode() == KeyEvent.VK_SPACE)
+            missiles.add(new Missile(ship.getX() + ship.getWIDHT()/2, ship.getY()));
+      else
+          e.consume();
+    }
 
     @Override
     public void keyReleased(KeyEvent e) {
@@ -176,4 +215,52 @@ public class SpacePanel extends JPanel implements  ActionListener, KeyListener {
     public static Image getImage() {
         return backgroundImage;
     }
+    
+    private int hasMissileHitObstacle() {
+        double x, y;
+        if(!missiles.isEmpty())
+            for(int k=0; k< missiles.size(); k++)
+            {
+                x = missiles.get(k).getX();
+                y = missiles.get(k).getY();
+                for(int i=0; i<10; i++)
+                    for(int j = 0; j<5; j++)
+                        if (invaders[i][j].getLowerRectangle().intersects(x, y, missiles.get(k).getWIDHT(), missiles.get(k).getHIGHT()))
+                        {
+                            if(!invaders[i][j].isHited()){
+                                invaders[i][j].setHited(true);
+                                return k;
+                            }
+                        }
+                for(int i = 0; i< 3; i++)
+                    if (walls[i].getLowerRectangle().intersects(x, y, missiles.get(k).getWIDHT(), missiles.get(k).getHIGHT()))
+                    {
+                        if(!walls[i].isFinished())
+                        {    walls[i].Hited();
+                            return k;
+                        }
+                    }
+            }
+    return -1;
+    }
+
+    private void moveMissile() {
+        if(!missiles.isEmpty()){
+        for(int i = 0; i< missiles.size(); i++)
+        {
+            missiles.get(i).move();
+            if(missiles.get(i).getY() < 0)
+                missiles.remove(i);
+        }
+    }
+    }
+    
+    private boolean gameOver(){
+        for(int i = 0; i<10; i++)
+            for(int j = 0; j<5; j++)
+                if(!invaders[i][j].isHited())
+                    return false;
+        return true;
+    }
 }
+
