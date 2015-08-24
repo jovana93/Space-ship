@@ -66,4 +66,7 @@ public class Missile {
     {
         y -=2;
     }
+    public void moveDown(){
+        y += 2;
+    }
 }
