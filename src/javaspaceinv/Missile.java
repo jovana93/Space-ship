@@ -7,15 +7,17 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class Missile {
+
     private Rectangle2D.Double lowerRectangle;
-    private int speedX =1;
+    private int speedX = 1;
     static BufferedImage missileImage = null;
-    
+
     private int x;
     private int y;
     private int WIDHT;
     private int HIGHT;
-    private boolean hited;   
+    private boolean hited;
+
     public Missile(int x, int y) {
         this.x = x;
         this.y = y;
@@ -24,9 +26,10 @@ public class Missile {
         hited = false;
         lowerRectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
     }
+
     public Rectangle2D.Double getLowerRectangle() {
         lowerRectangle.x = x;
-        return lowerRectangle; 
+        return lowerRectangle;
     }
 
     public int getWIDHT() {
@@ -45,14 +48,13 @@ public class Missile {
         return y;
     }
 
-    public boolean isHited() {
+    public boolean isHit() {
         return hited;
     }
 
-    
     public static void loadImages() {
         try {
-            missileImage = ImageIO.read(new File("src/images/invader.jpg"));
+            missileImage = ImageIO.read(new File("src/images/invader.png"));
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -61,12 +63,12 @@ public class Missile {
     public static BufferedImage getImage() {
         return missileImage;
     }
-    
-    public void move()
-    {
-        y -=2;
+
+    public void move() {
+        y -= 2;
     }
-    public void moveDown(){
+
+    public void moveDown() {
         y += 2;
     }
 }

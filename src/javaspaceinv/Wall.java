@@ -7,8 +7,9 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class Wall {
+
     private Rectangle2D.Double lowerRectangle;
-     static BufferedImage wallImage = null;
+    static BufferedImage wallImage = null;
     private int x;
     private int y;
     private int WIDHT;
@@ -16,7 +17,8 @@ public class Wall {
     private final int maxHits = 5;
     private int hitCount;
     private boolean finished;
-    public Wall(int x, int y, int  WIDHT,int HIGHT ) {
+
+    public Wall(int x, int y, int WIDHT, int HIGHT) {
         this.x = x;
         this.y = y;
         this.WIDHT = WIDHT;
@@ -25,9 +27,10 @@ public class Wall {
         lowerRectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
         finished = false;
     }
+
     public Rectangle2D.Double getLowerRectangle() {
         lowerRectangle.x = x;
-        return lowerRectangle; 
+        return lowerRectangle;
     }
 
     public int getWIDHT() {
@@ -46,18 +49,20 @@ public class Wall {
         return y;
     }
 
-    public void Hited(){
-            hitCount++;
-        if(hitCount == maxHits)
+    public void Hited() {
+        hitCount++;
+        if (hitCount == maxHits) {
             finished = true;
+        }
     }
+
     public boolean isFinished() {
         return finished;
     }
-    
+
     public static void loadImages() {
         try {
-            wallImage = ImageIO.read(new File("src/images/wall.jpg"));
+            wallImage = ImageIO.read(new File("src/images/wall.png"));
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -66,7 +71,6 @@ public class Wall {
     public static BufferedImage getImage() {
         return wallImage;
     }
-   }
-
+}
 
 
