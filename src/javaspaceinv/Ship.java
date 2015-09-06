@@ -46,13 +46,13 @@ public class Ship {
         return y;
     }
 
-    public void move() {
+    public void moveLeft() {
         if (getX() > 5) {
             x -= 20;
         }
     }
 
-    public void move1() {
+    public void moveRight() {
         if (getX() + getWIDHT() < 595) {
             x += 20;
         }

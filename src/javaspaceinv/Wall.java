@@ -50,8 +50,8 @@ public class Wall {
     }
 
     public void Hited() {
-        hitCount++;
-        if (hitCount == maxHits) {
+        hitCount++; 
+        if (hitCount == maxHits) { 
             finished = true;
         }
     }

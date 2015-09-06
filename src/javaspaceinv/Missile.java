@@ -9,8 +9,9 @@ import javax.imageio.ImageIO;
 public class Missile {
 
     private Rectangle2D.Double lowerRectangle;
-    private int speedX = 1;
+    private int speedX = 1; //brzina kretanja projektila
     static BufferedImage missileImage = null;
+    static BufferedImage missileDownImage = null;
 
     private int x;
     private int y;
@@ -54,13 +55,17 @@ public class Missile {
 
     public static void loadImages() {
         try {
-            missileImage = ImageIO.read(new File("src/images/invader.png"));
+            missileImage = ImageIO.read(new File("src/images/missile.png"));
+            
+            missileDownImage = ImageIO.read(new File("src/images/missileDown.png"));
         } catch (IOException e) {
             System.out.println(e);
         }
     }
 
-    public static BufferedImage getImage() {
+    public static BufferedImage getImage(boolean d) {
+        if(d)
+            return missileDownImage;
         return missileImage;
     }
 
