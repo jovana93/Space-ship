@@ -40,7 +40,11 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
     private int[][] listOfExplosions = new int[3][1];
     private int[] explosionY = new int[3];
     private int[] holdExplosion = new int[3];
-    
+    private final int framesForMissiles = 300;
+    private final int framesForSpeed = 120;
+    private int missileRate;
+    private int invadeSpeed;
+
     private final Timer timer;
     private static boolean inGame;
     private boolean finished;
@@ -56,10 +60,11 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
     private final int BACKGROUND_WIDTH = 1000;
     private final int backgroundPosition;
 
-    public static Dimension getPanelDimension(){
-    
-    return new Dimension(PANEL_WIDTH, PANEL_HEIGHT);
+    public static Dimension getPanelDimension() {
+
+        return new Dimension(PANEL_WIDTH, PANEL_HEIGHT);
     }
+
     public SpacePanel() {
         mainFont = new Font("Ariel", Font.BOLD, 18);
 
@@ -130,7 +135,7 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
-        if(started && !finished){
+        if (started && !finished) {
             drawBackground(g2d);
 
             g2d.draw(ship.getRectangle());
@@ -160,20 +165,18 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
                     g2d.drawImage(Missile.getImage(true), invaderMissile.getX(), invaderMissile.getY(), invaderMissile.getWIDHT(), invaderMissile.getHIGHT(), null);
                 }
             }
-            if(listOfExplosions[0][0] != -1){
-                drawExplosion(g2d, listOfExplosions[0][0], explosionY[0], 0);   
+            if (listOfExplosions[0][0] != -1) {
+                drawExplosion(g2d, listOfExplosions[0][0], explosionY[0], 0);
             }
-            if(listOfExplosions[1][0] != -1){
-                drawExplosion(g2d, listOfExplosions[1][0], explosionY[1], 1);   
+            if (listOfExplosions[1][0] != -1) {
+                drawExplosion(g2d, listOfExplosions[1][0], explosionY[1], 1);
             }
-            if(listOfExplosions[2][0] != -1){
+            if (listOfExplosions[2][0] != -1) {
                 drawExplosion(g2d, listOfExplosions[2][0], explosionY[2], 2);
             }
 
             drawScore(g2d);
-        }
-        else
-        {
+        } else {
             drawStart(g2d);
         }
         if (finished) {
@@ -220,13 +223,15 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
     private void drawBackground(Graphics2D g2d) {
         g2d.drawImage(backgroundImage, backgroundPosition, 0, BACKGROUND_WIDTH, PANEL_HEIGHT, null);
     }
+
     private void drawStart(Graphics2D g2d) {
         g2d.drawImage(startImage, backgroundPosition, 0, PANEL_WIDTH, PANEL_HEIGHT, null);
     }
+
     private void drawOver(Graphics2D g2d) {
         g2d.drawImage(gameOverImage, backgroundPosition, 0, PANEL_WIDTH, PANEL_HEIGHT, null);
     }
-    
+
     private void drawExplosion(Graphics2D g2d, int x, int y, int n) {
         g2d.drawImage(explosionImage, x - 10, y, 20, 20, null);
         holdExplosion[n]++;
@@ -235,8 +240,7 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
             holdExplosion[n] = 0;
         }
     }
-    
-    
+
     public int getPANEL_HEIGHT() {
         return PANEL_HEIGHT;
     }
@@ -250,14 +254,14 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
         if (inGame) {
             frame++;
             moveMissile();
-            if (frame % 10 == 0) {
+            if (frame % invadeSpeed == 0) {
                 moveInvaders();
             }
             int k = hasMissileHitInvaderOrWal();
             if (k != -1) {
                 explosionY[2] = missiles.get(k).getY();
                 listOfExplosions[2][0] = missiles.get(k).getX();
-                
+
                 missiles.remove(k);
             }
             if (hasMissileHitShip() || aliensHit()) {
@@ -265,7 +269,7 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
             }
 
             if (frame == invaderMissileFrame && inGame) {
-                invaderMissileFrame = random.nextInt(100) + 100 + frame;
+                invaderMissileFrame = random.nextInt(missileRate) + missileRate + frame + 1;
                 int i, j;
                 do {
                     i = random.nextInt(10);
@@ -276,42 +280,51 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
 
             }
             areMissilesCollided();
+            if (frame % framesForSpeed == 0) {
+                if (invadeSpeed > 1) {
+                    invadeSpeed--;
+                }
+            }
+            if (frame % framesForMissiles == 0) {
+                fasterMissileRate();
+            }
             repaint();
-            
-        } 
+
+        }
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-    
+
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(started){
+        if (started) {
             if (!inGame) {
                 inGame = true;
-                if(!finished)
+                if (!finished) {
                     timer.start();
+                }
             }
             if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                 ship.moveLeft();
             } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                 ship.moveRight();
             }
-        }else{
-                finished = false;
-                repaint();
+        } else {
+            finished = false;
+            repaint();
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) 
-        {
-            if(started)
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            if (started) {
                 missiles.add(new Missile(ship.getX() + ship.getWIDHT() / 2, ship.getY()));
-            
+            }
+
         }
     }
 
@@ -330,10 +343,11 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
             System.out.println(e);
         }
     }
+
     public static Image getImage() {
         return backgroundImage;
     }
-   
+
     private int hasMissileHitInvaderOrWal() {
         double x, y;
         if (!missiles.isEmpty()) {
@@ -366,7 +380,7 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
         }
         return -1;
     }
-    
+
     private void moveMissile() {
         if (!missiles.isEmpty()) {
             for (int i = 0; i < missiles.size(); i++) {
@@ -375,7 +389,7 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
                     listOfExplosions[0][0] = missiles.get(i).getX();
                     explosionY[0] = 0;
                     missiles.remove(i);
-                    
+
                 }
             }
         }
@@ -436,24 +450,27 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
 
             List<String> scores = load("src/score/results.txt");
             scores.add(playerName + " - " + getGameScore());
-            save_file("src/score/results.txt", scores); //igra je sacuvana
+            save_file("src/score/results.txt", scores); 
 
-        } catch (IOException ex) { //ako ne moze da bude prikazano, objavi gresku
+        } catch (IOException ex) { 
             System.out.println("Error : " + ex);
         }
         inGame = false;
         started = false;
     }
-    
+
     public int getGameScore() {
         return score;
     }
+
     public final void restart() {
         frame = 0;
         missiles = new ArrayList<>();
         finished = false;
         invaderMissiles = new ArrayList<>();
         score = 0;
+        missileRate = 330;
+        invadeSpeed = 10;
         inGame = false;
         started = true;
         ship = new Ship((getPANEL_WIDTH() - 70) / 2, getPANEL_HEIGHT() - 20, 70, 20);
@@ -465,7 +482,7 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
 
             }
         }
-        
+
         walls = new Wall[3];
         walls[0] = new Wall((getPANEL_WIDTH() - 410) / 2, getPANEL_HEIGHT() - 150, 70, 80);
         int x1 = walls[0].getX();
@@ -473,14 +490,15 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
             walls[k] = new Wall(x1 + k * (walls[0].getWIDHT() + 100), getPANEL_HEIGHT() - 150, 70, 40);
         }
 
-        invaderMissileFrame = random.nextInt(165) + 1;
+        invaderMissileFrame = random.nextInt(165) + missileRate;
         listOfExplosions[0][0] = listOfExplosions[1][0] = -1;
         repaint();
     }
+
     private void save_file(String name_fale, List<String> scores) throws IOException {
 
         File file = new File(name_fale);
-        if (!file.exists()) { //Ako ne postoji datoteka, kreirati je
+        if (!file.exists()) { 
             file.createNewFile();
         }
         try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
@@ -490,20 +508,20 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    // postaviti u listu rezultate(punjenje liste)
+  
     private List<String> load(String file_name) throws FileNotFoundException {
         File file = new File(file_name);
 
         if (!file.exists()) {
-            //ako ne postoji datotetka, izbaci izuzetak
+           
             throw new FileNotFoundException();
         }
 
         List<String> scores = new ArrayList<>();
 
-        try (Scanner scanner = new Scanner(file)) { //kreiranje citaoca koji unosi podatke
+        try (Scanner scanner = new Scanner(file)) { 
             while (scanner.hasNextLine()) {
-                scores.add(scanner.nextLine()); //postavljanje rezultata u listu
+                scores.add(scanner.nextLine()); 
 
             }
         }
@@ -513,7 +531,7 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
 
     public static void readTextFileLineByLine() {
         FileReader in = null;
-        //BufferedReader dozvoljava čitanje većeg "komada" datoteke odjednom.
+        
         BufferedReader bin = null;
 
         try {
@@ -521,16 +539,13 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
             File file = new File("src/score/results.txt");
 
             in = new FileReader(file);
-            // Za inicijalizaciju, BufferedReader zahtjeva otvoren FileReader tok
+            
             bin = new BufferedReader(in);
 
             String data;
             ArrayList<String> rijeci = new ArrayList<>();
 
-            /*
-             * Metoda readLine klase BufferedReader učitava jedan red teksta iz
-             * datoteke. Vraća null ukoliko dođe do kraja datoteke.
-             */
+            
             while ((data = bin.readLine()) != null) {
                 rijeci.add(data);
             }
@@ -564,18 +579,26 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
             }
         }
     }
+
     private void areMissilesCollided() {
-        if(!missiles.isEmpty() && !invaderMissiles.isEmpty()){
-            for(int indexShip = 0; indexShip < missiles.size(); indexShip++)
-            {
-                for(int indexInvader = 0; indexInvader < invaderMissiles.size(); indexInvader++)
-                {
-                    if(missiles.get(indexShip).getRectangle().intersects(invaderMissiles.get(indexInvader).getRectangle())){
+        if (!missiles.isEmpty() && !invaderMissiles.isEmpty()) {
+            for (int indexShip = 0; indexShip < missiles.size(); indexShip++) {
+                for (int indexInvader = 0; indexInvader < invaderMissiles.size(); indexInvader++) {
+                    if (missiles.get(indexShip).getRectangle().intersects(invaderMissiles.get(indexInvader).getRectangle())) {
                         missiles.remove(indexShip);
                         invaderMissiles.remove(indexInvader);
                     }
                 }
+
             }
+        }
+    }
+
+    private void fasterMissileRate() {
+        if (missileRate > 33) {
+            missileRate -= 33;
+        } else {
+            missileRate = 1;
         }
     }
 }

@@ -88,8 +88,9 @@ public class SpaceFrame extends JFrame {
                     if (answer == javax.swing.JOptionPane.YES_OPTION) {
                         panel.restart();
                     }
-                }else
+                } else {
                     panel.restart();
+                }
             }
         });
 

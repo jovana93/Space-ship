@@ -57,7 +57,7 @@ public class Missile {
     public static void loadImages() {
         try {
             missileImage = ImageIO.read(new File("src/images/missile.png"));
-            
+
             missileDownImage = ImageIO.read(new File("src/images/missileDown.png"));
         } catch (IOException e) {
             System.out.println(e);
@@ -65,8 +65,9 @@ public class Missile {
     }
 
     public static BufferedImage getImage(boolean d) {
-        if(d)
+        if (d) {
             return missileDownImage;
+        }
         return missileImage;
     }
 
