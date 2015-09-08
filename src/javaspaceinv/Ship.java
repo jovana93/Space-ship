@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 public class Ship {
 
-    private Rectangle2D.Double lowerRectangle;
+    private Rectangle2D.Double rectangle;
     private int speedX = 1;
     static BufferedImage shipImage = null;
     private int x;
@@ -22,12 +22,12 @@ public class Ship {
         this.WIDHT = WIDHT;
         this.HIGHT = HIGHT;
 
-        lowerRectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
+        rectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
     }
 
-    public Rectangle2D.Double getLowerRectangle() {
-        lowerRectangle.x = x;
-        return lowerRectangle;
+    public Rectangle2D.Double getRectangle() {
+        rectangle.x = x;
+        return rectangle;
     }
 
     public int getWIDHT() {

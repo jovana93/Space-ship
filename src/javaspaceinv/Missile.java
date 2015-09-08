@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 public class Missile {
 
-    private Rectangle2D.Double lowerRectangle;
+    private Rectangle2D.Double rectangle;
     private int speedX = 1; //brzina kretanja projektila
     static BufferedImage missileImage = null;
     static BufferedImage missileDownImage = null;
@@ -25,12 +25,13 @@ public class Missile {
         this.WIDHT = 5;
         this.HIGHT = 10;
         hited = false;
-        lowerRectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
+        rectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
     }
 
-    public Rectangle2D.Double getLowerRectangle() {
-        lowerRectangle.x = x;
-        return lowerRectangle;
+    public Rectangle2D.Double getRectangle() {
+        rectangle.x = x;
+        rectangle.y = y;
+        return rectangle;
     }
 
     public int getWIDHT() {

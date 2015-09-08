@@ -32,8 +32,16 @@ public class SpaceFrame extends JFrame {
         JMenu menu = new JMenu("Game");
         JMenuItem exit = new JMenuItem("Exit");
         JMenuItem game = new JMenuItem("New Game");
+        JMenuItem Scores = new JMenuItem("Scores");
 
         JMenu help = new JMenu("Help");
+        Scores.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.readTextFileLineByLine();
+            }
+        });
         help.addMouseListener(new MouseListener() {
 
             @Override
@@ -80,11 +88,13 @@ public class SpaceFrame extends JFrame {
                     if (answer == javax.swing.JOptionPane.YES_OPTION) {
                         panel.restart();
                     }
-                }
+                }else
+                    panel.restart();
             }
         });
 
         menu.add(game);
+        menu.add(Scores);
         menu.add(exit);
 
         menuBar.add(menu);

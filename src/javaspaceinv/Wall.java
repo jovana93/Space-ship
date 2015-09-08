@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 public class Wall {
 
-    private Rectangle2D.Double lowerRectangle;
+    private Rectangle2D.Double rectangle;
     static BufferedImage wallImage = null;
     private int x;
     private int y;
@@ -24,13 +24,13 @@ public class Wall {
         this.WIDHT = WIDHT;
         this.HIGHT = HIGHT;
         hitCount = 0;
-        lowerRectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
+        rectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
         finished = false;
     }
 
-    public Rectangle2D.Double getLowerRectangle() {
-        lowerRectangle.x = x;
-        return lowerRectangle;
+    public Rectangle2D.Double getRectangle() {
+        rectangle.x = x;
+        return rectangle;
     }
 
     public int getWIDHT() {

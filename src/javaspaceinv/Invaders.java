@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 public class Invaders {
 
-    private Rectangle2D.Double lowerRectangle;
+    private Rectangle2D.Double Rectangle;
     private int speedX = 1;
     static BufferedImage invaderImage = null;
 
@@ -26,12 +26,12 @@ public class Invaders {
         this.HIGHT = HIGHT;
         side = true;
         hited = false;
-        lowerRectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
+        Rectangle = new Rectangle2D.Double(x, y, WIDHT, HIGHT);
     }
 
-    public Rectangle2D.Double getLowerRectangle() {
-        lowerRectangle.x = x;
-        return lowerRectangle;
+    public Rectangle2D.Double getRectangle() {
+        Rectangle.x = x;
+        return Rectangle;
     }
 
     public int getWIDHT() {
