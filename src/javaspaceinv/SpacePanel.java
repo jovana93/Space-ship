@@ -26,6 +26,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+
+
 public class SpacePanel extends JPanel implements ActionListener, KeyListener {
 
     int frame;
@@ -288,8 +290,20 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
             if (frame % framesForMissiles == 0) {
                 fasterMissileRate();
             }
-            repaint();
+            if (frame % 5 == 0) {
+                if (isMoving) {
+                    if (leftPressed) {
+                        ship.moveLeft();
+                    } else if (rightPressed) {
+                        ship.moveRight();
+                    }
+                }
+            }
+            if (enterPressed && frame % 8 == 0) {
+                missiles.add(new Missile(ship.getX() + ship.getWIDHT() / 2, ship.getY()));
+            }
 
+            repaint();
         }
     }
 
@@ -297,6 +311,11 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
     public void keyTyped(KeyEvent e) {
 
     }
+    private boolean enterPressed = false;
+    private boolean isMoving = false;
+    private boolean movingSide;
+    private boolean leftPressed = false;
+    private boolean rightPressed = false;
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -307,10 +326,21 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
                     timer.start();
                 }
             }
-            if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                ship.moveLeft();
-            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                ship.moveRight();
+            if (!isMoving) {
+                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    ship.moveLeft();
+                    isMoving = true;
+                    leftPressed = true;
+                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    ship.moveRight();
+                    isMoving = true;
+                    rightPressed = true;
+                }
+            }
+            if (!enterPressed) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    enterPressed = true;
+                }
             }
         } else {
             finished = false;
@@ -320,11 +350,15 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            if (started) {
-                missiles.add(new Missile(ship.getX() + ship.getWIDHT() / 2, ship.getY()));
-            }
-
+        if (e.getKeyCode() == KeyEvent.VK_SPACE && enterPressed) {
+            enterPressed = false;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            isMoving = false;
+            leftPressed = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            isMoving = false;
+            rightPressed = false;
         }
     }
 
@@ -450,9 +484,9 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
 
             List<String> scores = load("src/score/results.txt");
             scores.add(playerName + " - " + getGameScore());
-            save_file("src/score/results.txt", scores); 
+            save_file("src/score/results.txt", scores);
 
-        } catch (IOException ex) { 
+        } catch (IOException ex) {
             System.out.println("Error : " + ex);
         }
         inGame = false;
@@ -498,7 +532,7 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
     private void save_file(String name_fale, List<String> scores) throws IOException {
 
         File file = new File(name_fale);
-        if (!file.exists()) { 
+        if (!file.exists()) {
             file.createNewFile();
         }
         try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
@@ -508,21 +542,19 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-  
     private List<String> load(String file_name) throws FileNotFoundException {
         File file = new File(file_name);
 
         if (!file.exists()) {
-           
+
             throw new FileNotFoundException();
         }
 
         List<String> scores = new ArrayList<>();
 
-        try (Scanner scanner = new Scanner(file)) { 
+        try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
-                scores.add(scanner.nextLine()); 
-
+                scores.add(scanner.nextLine());
             }
         }
 
@@ -531,7 +563,7 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
 
     public static void readTextFileLineByLine() {
         FileReader in = null;
-        
+
         BufferedReader bin = null;
 
         try {
@@ -539,23 +571,22 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
             File file = new File("src/score/results.txt");
 
             in = new FileReader(file);
-            
+
             bin = new BufferedReader(in);
 
             String data;
-            ArrayList<String> rijeci = new ArrayList<>();
+            ArrayList<String> words = new ArrayList<>();
 
-            
             while ((data = bin.readLine()) != null) {
-                rijeci.add(data);
+                words.add(data);
             }
 
-            int d = rijeci.size();
+            int d = words.size();
 
             String strLine = "";
 
             for (int i = 0; i < d; i++) {
-                strLine += (i + 1) + ". " + rijeci.get(i) + "\n";
+                strLine += (i + 1) + ". " + words.get(i) + "\n";
             }
             JOptionPane.showMessageDialog(null, strLine, "Scores", JOptionPane.INFORMATION_MESSAGE);
 
@@ -600,5 +631,6 @@ public class SpacePanel extends JPanel implements ActionListener, KeyListener {
         } else {
             missileRate = 1;
         }
+        System.out.println(missileRate);
     }
 }
